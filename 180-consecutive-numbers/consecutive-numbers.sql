@@ -1,6 +1,8 @@
-SELECT DISTINCT num AS ConsecutiveNums
-FROM (
-    SELECT *, LEAD(num, 1) OVER (ORDER BY id) as next1, LEAD(num, 2) OVER (ORDER BY id) as next2
-    FROM Logs
-) AS t
-WHERE num = t.next1 AND num = t.next2
+WITH nums AS ( 
+    SELECT DISTINCT num , LAG(num) OVER (ORDER BY id) AS prv, LEAD(num) OVER (ORDER BY id) AS nxt
+    FROM logs 
+)
+
+SELECT DISTINCT num AS ConsecutiveNums 
+FROM nums
+WHERE num = prv AND num = nxt
